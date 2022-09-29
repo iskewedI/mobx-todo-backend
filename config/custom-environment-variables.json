@@ -1,0 +1,4 @@
+{
+    "jwtPrivateKey": "backend_jwt",
+    "db": "backend_db"
+}
