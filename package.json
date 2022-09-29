@@ -1,0 +1,19 @@
+{
+  "name": "mobx-backend",
+  "version": "1.0.0",
+  "description": "MobX backend implementing GraphQL",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iskewedI/mobx-todo-backend.git"
+  },
+  "author": "Tornello Joaquin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iskewedI/mobx-todo-backend/issues"
+  },
+  "homepage": "https://github.com/iskewedI/mobx-todo-backend#readme"
+}
