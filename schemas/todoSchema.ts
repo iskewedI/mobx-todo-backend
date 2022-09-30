@@ -7,7 +7,13 @@ const schema = buildSchema(`
     }
 
     type Mutation {
-        createTodo(description: String,  isCompleted: Boolean): Todo
+        createTodo(description: String, isCompleted: Boolean): Todo
+        editTodo(id: String!, data: EditInput): Todo
+    }
+
+    input EditInput {
+        description: String
+        isCompleted: Boolean
     }
 
     type Todo {

@@ -1,11 +1,10 @@
+import mongoose from 'mongoose';
 import { Todo, validator } from '../models/todo';
 import validateBody from '../middleware/validateBody';
 import { ErrorCode } from '../types/constants';
 
 export default class TodosResolver {
   async todos() {
-    console.log('#');
-
     const todos = await Todo.find().sort('order');
 
     return todos;
@@ -30,8 +29,29 @@ export default class TodosResolver {
 
     await todo.save();
 
-    const result = { description: todo.description, isCompleted: todo.isCompleted };
+    return todo;
+  }
 
-    return result;
+  async editTodo({ id, data }: EditTodoBody): Promise<Todo> {
+    if (!data)
+      throw new Error(`${ErrorCode.BadUserInput}: The data property should be provided`);
+
+    const incomingId = new mongoose.Types.ObjectId(id);
+    const { description, isCompleted } = data;
+
+    const todo = await Todo.findOneAndUpdate(
+      { _id: incomingId },
+      {
+        description: description,
+        isCompleted: isCompleted,
+      }
+    );
+
+    if (!todo)
+      throw new Error(
+        `${ErrorCode.BadUserInput}: Couldn't find a record with the requested id`
+      );
+
+    return todo;
   }
 }
