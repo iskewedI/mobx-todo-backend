@@ -1,5 +1,11 @@
-import { Request, Response, NextFunction } from 'express';
+export default function (validator: RequestValidator, body: unknown) {
+  const { error } = validator(body);
 
+  if (error) throw new Error(`BAD_USER_INPUT: ${error.message}`);
+}
+
+/*
+REST Api validator
 export default function (validator: RequestValidator) {
   return (req: Request, res: Response, next: NextFunction) => {
     req.body.language = req.body.lang || 'en';
@@ -10,3 +16,4 @@ export default function (validator: RequestValidator) {
     next();
   };
 }
+*/

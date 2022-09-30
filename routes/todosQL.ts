@@ -10,11 +10,16 @@ export default class TodosResolver {
     return todos;
   }
 
-  async createTodo({ description, isCompleted }: Todo): Promise<Todo> {
-    // validateBody(validator);
+  async createTodo(body: Todo): Promise<Todo> {
+    validateBody(validator, body);
 
-    // const existingTodo = await Todo.findOne({ description: body.description });
-    // if (existingTodo) return res.status(400).send("Can't create duplicated record.");
+    const { description, isCompleted } = body;
+
+    const existingTodo = await Todo.findOne({ description: description });
+    if (existingTodo)
+      throw new Error(
+        "BAD_USER_INPUT: There's another record with the same description received."
+      );
 
     // Generate a new record
     const todo = new Todo({
