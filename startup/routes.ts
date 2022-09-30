@@ -5,7 +5,7 @@ import todoSchema from '../schemas/todoSchema';
 // import todosRoute from '../routes/todos';
 import todosRoute from '../routes/todosQL';
 
-import error from '../middleware/error';
+// import error from '../middleware/error';
 import { apiVersion, endpoints } from '../config.json';
 
 const getApiEndpoint = (endpoint: string) => `/api/${apiVersion}/${endpoint}`;
@@ -20,5 +20,5 @@ module.exports = function (app: Express) {
   );
 
   // Middlewares
-  app.use(error);
+  // app.use(error);
 };

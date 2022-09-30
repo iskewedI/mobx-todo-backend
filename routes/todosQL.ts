@@ -1,5 +1,6 @@
 import { Todo, validator } from '../models/todo';
 import validateBody from '../middleware/validateBody';
+import { ErrorCode } from '../types/constants';
 
 export default class TodosResolver {
   async todos() {
@@ -18,7 +19,7 @@ export default class TodosResolver {
     const existingTodo = await Todo.findOne({ description: description });
     if (existingTodo)
       throw new Error(
-        "BAD_USER_INPUT: There's another record with the same description received."
+        `${ErrorCode.BadUserInput}: There's another record with the same description received.`
       );
 
     // Generate a new record
