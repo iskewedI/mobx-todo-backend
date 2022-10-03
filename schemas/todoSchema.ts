@@ -19,6 +19,7 @@ const schema = buildSchema(`
     type Todo {
         description: String
         isCompleted: Boolean
+        id: ID
     }
 `);
 

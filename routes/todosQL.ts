@@ -44,7 +44,8 @@ export default class TodosResolver {
       {
         description: description,
         isCompleted: isCompleted,
-      }
+      },
+      { new: true }
     );
 
     if (!todo)
