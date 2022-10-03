@@ -4,11 +4,20 @@ type Todo = {
 };
 
 type PostBody = {
-  body: Todo;
+  body: TodoModel;
 };
 
 type EditTodoBody = {
   id: string;
-  data: Todo;
+  data: TodoModel;
 };
+
+type DeleteTodoBody = {
+  id: string;
+};
+
+type DeletionResult = {
+  success: boolean;
+};
+
 type RequestValidator = (input: T) => Joi.ValidationResult<any>;

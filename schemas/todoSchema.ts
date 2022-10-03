@@ -9,6 +9,7 @@ const schema = buildSchema(`
     type Mutation {
         createTodo(description: String, isCompleted: Boolean): Todo
         editTodo(id: String!, data: EditInput): Todo
+        deleteTodo(id: String!): DeletionResult
     }
 
     input EditInput {
@@ -20,6 +21,10 @@ const schema = buildSchema(`
         description: String
         isCompleted: Boolean
         id: ID
+    }
+
+    type DeletionResult {
+        success: Boolean
     }
 `);
 

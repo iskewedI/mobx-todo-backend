@@ -55,4 +55,16 @@ export default class TodosResolver {
 
     return todo;
   }
+
+  async deleteTodo({ id }: DeleteTodoBody): Promise<DeletionResult> {
+    const incomingId = new mongoose.Types.ObjectId(id);
+
+    const deleteResult = await Todo.deleteOne({ _id: incomingId });
+
+    const result: DeletionResult = {
+      success: deleteResult.deletedCount === 1,
+    };
+
+    return result;
+  }
 }
