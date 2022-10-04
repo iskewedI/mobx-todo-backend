@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import Joi from 'joi';
 
 const todoSchema = new mongoose.Schema({
-  description: { type: String, required: true, minlength: 3, maxlength: 25 },
+  description: { type: String, required: true, minlength: 3, maxlength: 40 },
   isCompleted: { type: Boolean, required: false },
 });
 
@@ -12,7 +12,7 @@ const Todo = mongoose.model('todos', todoSchema);
 
 function validator(todo: Todo) {
   const schema = Joi.object({
-    description: Joi.string().min(3).max(25).required(),
+    description: Joi.string().min(3).max(40).required(),
     isCompleted: Joi.boolean(),
   }).options({ allowUnknown: true });
 
