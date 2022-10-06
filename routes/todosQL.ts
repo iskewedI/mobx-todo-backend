@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { Todo, validator } from '../models/todo';
 import validateBody from '../middleware/validateBody';
 import { ErrorCode } from '../types/constants';
+import { VerticalDirection } from '../types/enums';
 
 export default class TodosResolver {
   async todos() {
@@ -21,10 +22,13 @@ export default class TodosResolver {
         `${ErrorCode.BadUserInput}: There's another record with the same description received.`
       );
 
+    const todosCount = await Todo.count();
+
     // Generate a new record
     const todo = new Todo({
       description: description,
       isCompleted: isCompleted ?? false,
+      place: todosCount + 1,
     });
 
     await todo.save();
@@ -37,13 +41,54 @@ export default class TodosResolver {
       throw new Error(`${ErrorCode.BadUserInput}: The data property should be provided`);
 
     const incomingId = new mongoose.Types.ObjectId(id);
-    const { description, isCompleted } = data;
+    const { description, isCompleted, place } = data;
+
+    if (place) {
+      const oldTodo = await Todo.findById(id);
+      if (oldTodo) {
+        let condition;
+        let direction: VerticalDirection;
+
+        if (oldTodo.place < place) {
+          // Down direction
+          // Get all the todos with place lesser than this new order.
+          condition = { $lte: place };
+          direction = VerticalDirection.Down;
+        } else {
+          // Upper direction
+          // Get all the todos with place greater than this new order.
+          condition = { $gte: place };
+          direction = VerticalDirection.Up;
+        }
+
+        const toUpdateTodos = await Todo.find({ place: condition });
+
+        toUpdateTodos.forEach((todo, i, arr) => {
+          if (direction === VerticalDirection.Down) {
+            if (todo.place - 1 >= 0) {
+              todo.place -= 1;
+            }
+          } else {
+            if (i < arr.length - 1) {
+              todo.place += 1;
+            }
+          }
+        });
+
+        try {
+          await Todo.bulkSave(toUpdateTodos);
+        } catch (er) {
+          console.error(er);
+        }
+      }
+    }
 
     const todo = await Todo.findOneAndUpdate(
       { _id: incomingId },
       {
         description: description,
         isCompleted: isCompleted,
+        place,
       },
       { new: true }
     );

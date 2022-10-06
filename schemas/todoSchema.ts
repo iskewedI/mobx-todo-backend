@@ -15,12 +15,14 @@ const schema = buildSchema(`
     input EditInput {
         description: String
         isCompleted: Boolean
+        place: Int
     }
 
     type Todo {
+        id: ID
         description: String
         isCompleted: Boolean
-        id: ID
+        place: Int
     }
 
     type DeletionResult {

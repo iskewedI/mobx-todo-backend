@@ -1,15 +1,16 @@
 type Todo = {
   description?: string;
   isCompleted?: boolean;
+  place?: number;
 };
 
 type PostBody = {
-  body: TodoModel;
+  body: Todo;
 };
 
 type EditTodoBody = {
   id: string;
-  data: TodoModel;
+  data: Todo;
 };
 
 type DeleteTodoBody = {
