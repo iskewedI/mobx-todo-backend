@@ -1,6 +1,5 @@
 import winston from 'winston'; //Logger
 import config from 'config';
-
 import 'winston-mongodb'; //Logger to database mongoDB
 import 'express-async-errors'; //Envolves router async functions in try/catch blocks
 
@@ -10,6 +9,7 @@ module.exports = function () {
     new winston.transports.File({ filename: './uncaughtExceptions.log' }),
     new winston.transports.Console({ format: winston.format.simple() })
   );
+
   //Trick to handle Promise Rejections too with winston
   process.on('unhandledRejection', ex => {
     throw ex;
@@ -23,5 +23,6 @@ module.exports = function () {
       level: 'info',
     })
   );
+
   winston.add(new winston.transports.MongoDB({ db: config.get('db') }));
 };
