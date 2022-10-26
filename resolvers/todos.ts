@@ -3,18 +3,23 @@ import { Todo, validator } from '../models/todo';
 import validateBody from '../middleware/validateBody';
 import { ErrorCode } from '../types/constants';
 import { VerticalDirection } from '../types/enums';
+import Auth from '../decorators/Auth';
+import { User } from '../models/user';
 
 export default class TodosResolver {
-  async todos() {
-    const todos = await Todo.find().sort('order');
+  @Auth
+  async todos(body: unknown, context: ResolverContext) {
+    const todos = await Todo.find({ user: context.decodedData?.user._id }).sort('order');
 
     return todos;
   }
 
-  async createTodo(body: Todo): Promise<Todo> {
+  @Auth
+  async createTodo(body: NewTodo, context: ResolverContext): Promise<Todo> {
     validateBody(validator, body);
 
     const { description, isCompleted } = body;
+    const userId = context.decodedData?.user._id;
 
     const existingTodo = await Todo.findOne({ description: description });
     if (existingTodo)
@@ -29,14 +34,18 @@ export default class TodosResolver {
       description: description,
       isCompleted: isCompleted ?? false,
       place: todosCount + 1,
+      user: userId,
     });
 
     await todo.save();
 
+    await User.updateOne({ _id: userId }, { $addToSet: { todos: todo._id } });
+
     return todo;
   }
 
-  async editTodo({ id, data }: EditTodoBody): Promise<Todo> {
+  @Auth
+  async editTodo({ id, data }: EditTodoBody, context: ResolverContext): Promise<Todo> {
     if (!data)
       throw new Error(`${ErrorCode.BadUserInput}: The data property should be provided`);
 
@@ -61,7 +70,10 @@ export default class TodosResolver {
           direction = VerticalDirection.Up;
         }
 
-        const toUpdateTodos = await Todo.find({ place: condition });
+        const toUpdateTodos = await Todo.find({
+          place: condition,
+          user: context.decodedData?.user._id,
+        });
 
         toUpdateTodos.forEach((todo, i, arr) => {
           if (direction === VerticalDirection.Down) {
@@ -101,13 +113,23 @@ export default class TodosResolver {
     return todo;
   }
 
-  async deleteTodo({ id }: DeleteTodoBody): Promise<DeletionResult> {
+  @Auth
+  async deleteTodo(
+    { id }: DeleteTodoBody,
+    context: ResolverContext
+  ): Promise<DeletionResult> {
     const incomingId = new mongoose.Types.ObjectId(id);
+    const userId = context.decodedData?.user._id;
 
-    const deleteResult = await Todo.deleteOne({ _id: incomingId });
+    const deleteResult = await Todo.deleteOne({ _id: incomingId, user: userId });
+
+    const updateResult = await User.updateOne(
+      { _id: userId },
+      { $pull: { todos: incomingId } }
+    );
 
     const result: DeletionResult = {
-      success: deleteResult.deletedCount === 1,
+      success: deleteResult.deletedCount === 1 && updateResult.modifiedCount === 1,
     };
 
     return result;

@@ -1,12 +1,14 @@
 import express, { Express } from 'express';
 import { graphqlHTTP } from 'express-graphql';
 
-import todoSchema from '../schemas/todoSchema';
-import todosRoute from '../routes/todosQL';
+import rootSchema from '../schemas/rootSchema';
+import rootResolver from '../resolvers/rootResolver';
 
 import { apiVersion, endpoints } from '../config.json';
 import cors from '../middleware/cors';
 import error from '../middleware/error';
+import cookies, { ExpressRequestWithContext } from '../middleware/cookies';
+import cookieParser from 'cookie-parser';
 
 const getApiEndpoint = (endpoint: string) => `/api/${apiVersion}/${endpoint}`;
 
@@ -17,7 +19,14 @@ module.exports = function (app: Express) {
 
   app.use(
     getApiEndpoint(endpoints.Todos),
-    graphqlHTTP({ schema: todoSchema, rootValue: new todosRoute(), graphiql: true })
+    cookieParser(),
+    cookies,
+    graphqlHTTP((request: ExpressRequestWithContext) => ({
+      schema: rootSchema,
+      rootValue: new rootResolver(),
+      graphiql: true,
+      context: request.context,
+    }))
   );
 
   app.use(error);

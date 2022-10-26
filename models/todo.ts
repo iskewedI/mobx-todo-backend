@@ -5,6 +5,7 @@ const todoSchema = new mongoose.Schema({
   description: { type: String, required: true, minlength: 3, maxlength: 40 },
   isCompleted: { type: Boolean, required: true },
   place: { type: Number, required: true },
+  user: { type: String, required: true, minlength: 10, maxlength: 40 },
 });
 
 todoSchema.plugin(require('mongoose-beautiful-unique-validation'));
@@ -21,4 +22,4 @@ function validator(todo: Todo) {
   return schema.validate(todo);
 }
 
-export { Todo, validator };
+export { Todo, validator, todoSchema };
