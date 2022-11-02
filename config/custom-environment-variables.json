@@ -1,5 +1,6 @@
 {
     "jwtPrivateKey": "backend_jwt",
     "db": "backend_db",
-    "client_url": "client_url_prod"
+    "client_url": "client_url_prod",
+    "auth_cookie_name": "Todos_Auth"
 }

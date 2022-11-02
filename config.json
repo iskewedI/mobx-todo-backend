@@ -1,6 +1,7 @@
 {
     "apiVersion": "v1",
     "endpoints": {
+        "Auth": "auth",
         "Todos": "todos"
     }
 }

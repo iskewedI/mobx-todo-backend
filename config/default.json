@@ -1,5 +1,6 @@
 {
     "jwtPrivateKey": "test",
     "db": "mongodb://127.0.0.1:27017/mobx-todos",
-    "client_url": "http://localhost:3001"
+    "client_url": "http://localhost:3001",
+    "auth_cookie_name": "Todos_Auth"
 }

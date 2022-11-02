@@ -9,6 +9,7 @@ const schema = buildSchema(`
     type Query {
         user: User
         todo(id: String): Todo
+        auth(email: String, password: String): AuthResult
     }
 
     type Mutation {
@@ -17,7 +18,6 @@ const schema = buildSchema(`
         editUser(name: String, password: String): User
         editTodo(id: String!, data: EditTodoInput): Todo
         deleteTodo(id: String!): DeletionResult
-        auth(email: String, password: String): AuthResult
     }
 
     input EditTodoInput {
@@ -36,6 +36,7 @@ const schema = buildSchema(`
 
     type AuthResult {
         token: ID
+        user: User
     }
 
     type User {
