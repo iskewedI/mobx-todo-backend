@@ -17,7 +17,8 @@ const schema = buildSchema(`
         createUser(name: String, email: String, password: String): UserCreationResult
         editUser(name: String, password: String): User
         editTodo(id: String!, data: EditTodoInput): Todo
-        deleteTodo(id: String!): DeletionResult
+        deleteTodo(id: String!): Result
+        addPoints(amount: Int): AddPointsResult
     }
 
     input EditTodoInput {
@@ -42,6 +43,7 @@ const schema = buildSchema(`
     type User {
         name: String
         email: String
+        points: Int
         todos: [Todo]
     }
 
@@ -51,8 +53,12 @@ const schema = buildSchema(`
         token: String
     }
 
-    type DeletionResult {
+    type Result {
         success: Boolean
+    }
+
+    type AddPointsResult {
+        currentPoints: Int
     }
 `);
 

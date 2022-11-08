@@ -20,7 +20,7 @@ export default class UsersResolver {
 
     const todos = await Todo.find({ _id: user.todos });
 
-    return { name: user.name, email: user.email, todos };
+    return { name: user.name, email: user.email, todos, points: user.points };
   }
 
   async createUser(body: NewUser) {
@@ -72,7 +72,25 @@ export default class UsersResolver {
     if (!result)
       throw new Error(`${ErrorCode.BadUserInput}: No user found with the token provided`);
 
-    return { name: result.name, email: result.email, todos: result.todos };
+    return {
+      name: result.name,
+      email: result.email,
+      todos: result.todos,
+      points: result.points,
+    };
+  }
+
+  @Auth
+  async addPoints(body: AddPointsInput, context: ResolverContext) {
+    const user = await User.findById(context.decodedData?.user._id).select('-password');
+
+    if (!user) throw new Error(`${ErrorCode.BadUserInput}: Invalid token`);
+
+    user.points += body.amount;
+
+    await user.save();
+
+    return { currentPoints: user.points };
   }
 
   // TODO: deleteUser

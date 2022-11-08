@@ -26,6 +26,7 @@ router.post('/', async ({ body }, res) => {
     user: {
       name: user.name,
       email: user.email,
+      points: user.points,
     },
   });
 });

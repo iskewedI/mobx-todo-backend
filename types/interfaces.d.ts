@@ -67,6 +67,11 @@ interface UserSchema {
   name: string;
   email: string;
   password: string;
+  points: number;
   todos: Array;
   generateAuthToken: () => string;
 }
+
+type AddPointsInput = {
+  amount: number;
+};
